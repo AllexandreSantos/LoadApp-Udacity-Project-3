@@ -18,28 +18,26 @@ class LoadingButton @JvmOverloads constructor(
     private var loadingAngle = 0f
     private var buttonText = ""
 
-    private var btnAnimator = ValueAnimator()
+    private var buttonAnimator = ValueAnimator()
     private var circleAnimator = ValueAnimator()
 
 
-    private val paintBtn = Paint()
-    private val paintCircle = Paint()
-    private val paintBtnText = Paint().apply {
+    private val buttonPaint = Paint()
+    private val circlePaint = Paint()
+    private val buttonTextPaint = Paint().apply {
         textSize = 55f
         textAlign = Paint.Align.CENTER
         typeface = Typeface.create("", Typeface.BOLD)
     }
-    private var btnColor = 0
-    private var btnTextColor = 0
+    private var buttonColor = 0
+    private var buttonTextColor = 0
     private var circleColor = 0
 
     var buttonState: ButtonState by Delegates.observable<ButtonState>(ButtonState.Completed) { p, old, new ->
         when (new) {
             ButtonState.Loading -> {
-                // dont know how to add that progress number in here
-                buttonText = " Loading File..."
-                // btn animation
-                btnAnimator = ValueAnimator.ofFloat(0f, measuredWidth.toFloat())
+                buttonText = context.getString(R.string.loading_file)
+                buttonAnimator = ValueAnimator.ofFloat(0f, measuredWidth.toFloat())
                     .apply {
                         duration = 2000
                         repeatMode = ValueAnimator.RESTART
@@ -50,9 +48,8 @@ class LoadingButton @JvmOverloads constructor(
                         }
                         start()
                     }
-                // circle animation
                 circleAnimator = ValueAnimator.ofFloat(0f, 360f).apply {
-                    duration = 1500
+                    duration = 2000
                     repeatMode = ValueAnimator.RESTART
                     repeatCount = ValueAnimator.INFINITE
 
@@ -67,57 +64,53 @@ class LoadingButton @JvmOverloads constructor(
                 }
             }
             ButtonState.Completed -> {
-                buttonText = "DOWNLOAD"
+                buttonText = context.getString(R.string.download)
                 loadingWidth = 0f
                 loadingAngle = 0f
-                btnAnimator.end()
+                buttonAnimator.end()
                 circleAnimator.end()
                 invalidate()
-
-
             }
+
         }
 
     }
-
 
     init {
         isClickable = true
-        buttonText = "DOWNLOAD"
+        buttonText = context.getString(R.string.download)
         context.theme.obtainStyledAttributes(attrs, R.styleable.LoadingButton, 0, 0).apply {
-            btnColor = getColor(R.styleable.LoadingButton_btnBgColor, 0)
-            btnTextColor = getColor(R.styleable.LoadingButton_btnTextColor, 0)
+            buttonColor = getColor(R.styleable.LoadingButton_buttonColor, 0)
+            buttonTextColor = getColor(R.styleable.LoadingButton_buttonTextColor, 0)
             circleColor = getColor(R.styleable.LoadingButton_circleColor, 0)
 
         }
-        paintBtn.color = btnColor
-        paintBtnText.color = btnTextColor
-        paintCircle.color = circleColor
-
-
+        buttonPaint.color = buttonColor
+        buttonTextPaint.color = buttonTextColor
+        circlePaint.color = circleColor
     }
 
     override fun onDraw(canvas: Canvas?) {
-        paintBtn.color = btnColor
+        buttonPaint.color = buttonColor
 
         super.onDraw(canvas)
-        canvas!!.drawRect(0f, 0f, measuredWidth.toFloat(), measuredHeight.toFloat(), paintBtn)
+        canvas!!.drawRect(0f, 0f, measuredWidth.toFloat(), measuredHeight.toFloat(), buttonPaint)
 
-        paintBtn.color = context.getColor(R.color.colorAccent)
-        canvas.drawRect(0f, 0f, loadingWidth, measuredHeight.toFloat(), paintBtn)
+        buttonPaint.color = context.getColor(R.color.colorAccent)
+        canvas.drawRect(0f, 0f, loadingWidth, measuredHeight.toFloat(), buttonPaint)
 
         canvas.drawText(
             buttonText,
             measuredWidth.toFloat() / 2,
             measuredHeight / 1.7f,
-            paintBtnText
+            buttonTextPaint
         )
         canvas.drawArc(
             measuredWidth - 100f,
             (measuredHeight / 2) - 30f,
             measuredWidth - 50f,
             (measuredHeight / 2) + 30f,
-            0f, loadingAngle, true, paintCircle
+            0f, loadingAngle, true, circlePaint
         )
 
     }

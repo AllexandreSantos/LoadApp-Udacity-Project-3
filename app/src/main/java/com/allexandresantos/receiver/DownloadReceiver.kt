@@ -16,32 +16,17 @@ import com.allexandresantos.sendNotification
 
 class DownloadReceiver: BroadcastReceiver() {
 
-
     override fun onReceive(context: Context, intent: Intent?) {
-
-
-//        fun foregrounded(): Boolean {
-//            val appProcessInfo = ActivityManager.RunningAppProcessInfo();
-//            ActivityManager.getMyMemoryState(appProcessInfo);
-//            return (appProcessInfo.importance == IMPORTANCE_FOREGROUND || appProcessInfo.importance == IMPORTANCE_VISIBLE)
-//        }
-
-
-
 
         val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
         Log.d("oi", "onReceive: ID " + id)
-
 
         val notificationManager = ContextCompat.getSystemService(
             context,
             NotificationManager::class.java
         ) as NotificationManager
 
-        notificationManager.sendNotification(
-            context.getText(R.string.download_finished).toString(),
-            context
-        )
+        notificationManager.sendNotification(context.getText(R.string.download_finished).toString(), context)
 
     }
 
