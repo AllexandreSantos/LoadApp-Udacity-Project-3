@@ -24,13 +24,13 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
     val action: LiveData<Event<MainAction>>
         get() = _action
 
-    private val _buttonState = MutableLiveData<Event<ButtonState>>()
+    private val _buttonState = MutableLiveData<ButtonState>()
 
-    val buttonState: LiveData<Event<ButtonState>>
+    val buttonState: LiveData<ButtonState>
         get() = _buttonState
 
     init {
-        _buttonState.value = Event(ButtonState.InitialState)
+        _buttonState.value = ButtonState.InitialState
     }
 
 
@@ -50,7 +50,7 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
 
         val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
 
-        _buttonState.value = Event(ButtonState.Completed)
+        _buttonState.value = ButtonState.Completed
 
         _action.value = Event(MainAction.DownloadHasFinished)
 
@@ -65,7 +65,7 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
 
     private fun download(type: DownloadType) {
 
-        _buttonState.value = Event(ButtonState.Loading)
+        _buttonState.value = ButtonState.Loading
 
         val request =
             DownloadManager.Request(Uri.parse(type.value))

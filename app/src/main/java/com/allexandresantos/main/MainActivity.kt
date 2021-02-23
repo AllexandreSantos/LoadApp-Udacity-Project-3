@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.buttonState.observe(this) {
-            it?.getContentIfNotHandled()?.let { binding.customButton.setState(it) }
+            it?.let { binding.customButton?.setState(it) }
         }
 
     }
