@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import com.allexandresantos.R
@@ -25,7 +26,7 @@ class LoadingButton @JvmOverloads constructor(
     private val buttonPaint = Paint()
     private val circlePaint = Paint()
     private val buttonTextPaint = Paint().apply {
-        textSize = 55f
+        textSize = 50f
         textAlign = Paint.Align.CENTER
         typeface = Typeface.create("", Typeface.BOLD)
     }
@@ -33,61 +34,78 @@ class LoadingButton @JvmOverloads constructor(
     private var buttonTextColor = 0
     private var circleColor = 0
 
-    var buttonState: ButtonState by Delegates.observable<ButtonState>(ButtonState.Completed) { p, old, new ->
+    init {
+        initialize(attrs)
+    }
+
+    private fun initialize(attrs: AttributeSet? = null){
+
+        isClickable = true
+        buttonText = context.getString(R.string.download)
+        attrs?.let {
+            context.theme.obtainStyledAttributes(it, R.styleable.LoadingButton, 0, 0).apply {
+                buttonColor = getColor(R.styleable.LoadingButton_buttonColor, 0)
+                buttonTextColor = getColor(R.styleable.LoadingButton_buttonTextColor, 0)
+                circleColor = getColor(R.styleable.LoadingButton_circleColor, 0)
+
+            }
+        }
+
+        buttonPaint.color = buttonColor
+        buttonTextPaint.color = buttonTextColor
+        circlePaint.color = circleColor
+
+    }
+
+    private var buttonState: ButtonState by Delegates.observable(ButtonState.Completed) { _, _, new ->
         when (new) {
             ButtonState.Loading -> {
                 buttonText = context.getString(R.string.loading_file)
-                buttonAnimator = ValueAnimator.ofFloat(0f, measuredWidth.toFloat())
-                    .apply {
-                        duration = 2000
-                        repeatMode = ValueAnimator.RESTART
-                        repeatCount = ValueAnimator.INFINITE
-                        addUpdateListener {
-                            loadingWidth = animatedValue as Float
-                            this@LoadingButton.invalidate()
-                        }
-                        start()
+                buttonAnimator = ValueAnimator.ofFloat(0f, measuredWidth.toFloat()).apply {
+                    duration = 2000
+                    repeatMode = ValueAnimator.RESTART
+                    repeatCount = ValueAnimator.INFINITE
+
+                    interpolator = AccelerateInterpolator(1f)
+
+
+                    addUpdateListener {
+                        loadingWidth = animatedValue as Float
+                        this@LoadingButton.invalidate()
                     }
+                    start()
+                }
+
                 circleAnimator = ValueAnimator.ofFloat(0f, 360f).apply {
                     duration = 2000
                     repeatMode = ValueAnimator.RESTART
                     repeatCount = ValueAnimator.INFINITE
 
                     interpolator = AccelerateInterpolator(1f)
+
                     addUpdateListener {
                         loadingAngle = animatedValue as Float
                         this@LoadingButton.invalidate()
                     }
-
                     start()
-
                 }
             }
+
             ButtonState.Completed -> {
+                initialize()
                 buttonText = context.getString(R.string.download)
+                buttonColor = context.getColor(R.color.colorPrimary)
                 loadingWidth = 0f
                 loadingAngle = 0f
                 buttonAnimator.end()
                 circleAnimator.end()
-                invalidate()
+                this@LoadingButton.invalidate()
             }
 
-        }
-
-    }
-
-    init {
-        isClickable = true
-        buttonText = context.getString(R.string.download)
-        context.theme.obtainStyledAttributes(attrs, R.styleable.LoadingButton, 0, 0).apply {
-            buttonColor = getColor(R.styleable.LoadingButton_buttonColor, 0)
-            buttonTextColor = getColor(R.styleable.LoadingButton_buttonTextColor, 0)
-            circleColor = getColor(R.styleable.LoadingButton_circleColor, 0)
+            ButtonState.InitialState -> Log.d("oi", ": teste")
 
         }
-        buttonPaint.color = buttonColor
-        buttonTextPaint.color = buttonTextColor
-        circlePaint.color = circleColor
+
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -135,8 +153,8 @@ class LoadingButton @JvmOverloads constructor(
         setMeasuredDimension(w, h)
     }
 
-    fun setState(state: ButtonState) {
-        buttonState = state
+    fun setState(state: ButtonState?) {
+        state?.let { buttonState = it }
     }
 
 }

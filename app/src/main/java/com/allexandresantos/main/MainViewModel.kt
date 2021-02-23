@@ -2,16 +2,17 @@ package com.allexandresantos.main
 
 import android.app.Application
 import android.app.DownloadManager
-import android.app.PendingIntent
+import android.app.NotificationManager
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.allexandresantos.R
-import com.allexandresantos.receiver.DownloadReceiver
+import com.allexandresantos.custombutton.ButtonState
+import com.allexandresantos.sendNotification
 import com.allexandresantos.util.Event
 
 class MainViewModel(val app: Application) : AndroidViewModel(app) {
@@ -23,13 +24,49 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
     val action: LiveData<Event<MainAction>>
         get() = _action
 
+    private val _buttonState = MutableLiveData<Event<ButtonState>>()
+
+    val buttonState: LiveData<Event<ButtonState>>
+        get() = _buttonState
+
+    init {
+        _buttonState.value = Event(ButtonState.InitialState)
+    }
+
 
     fun setType(type: DownloadType){
         downloadType = type
-        Log.d("oi", "setType: " + downloadType)
+    }
+
+    fun startDownload(){
+        if (downloadType != null){
+            downloadType?.let { download(it) }
+        } else{
+            _action.value = Event(MainAction.SelectFile)
+        }
+    }
+
+    fun setDownloadComplete(intent: Intent?){
+
+        val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+
+        _buttonState.value = Event(ButtonState.Completed)
+
+        _action.value = Event(MainAction.DownloadHasFinished)
+
+        val notificationManager = ContextCompat.getSystemService(
+            app.applicationContext,
+            NotificationManager::class.java
+        ) as NotificationManager
+
+        notificationManager.sendNotification(app.applicationContext.getText(R.string.download_finished).toString(), app.applicationContext)
+
     }
 
     private fun download(type: DownloadType) {
+
+        _buttonState.value = Event(ButtonState.Loading)
+
         val request =
             DownloadManager.Request(Uri.parse(type.value))
                 .setTitle(app.applicationContext. getString(R.string.app_name))
@@ -42,14 +79,6 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
         downloadManager.enqueue(request)// enqueue puts the download request in the queue.
     }
 
-    fun startDownload(){
-        if (downloadType != null){
-            downloadType?.let { download(it) }
-        } else{
-            _action.value = Event(MainAction.SelectDownloadToast)
-        }
-    }
-
     enum class DownloadType(val value: String){
         UDACITY("https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/master.zip"),
         RETROFIT("https://github.com/square/retrofit/archive/master.zip"),
@@ -57,7 +86,8 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
     }
 
     sealed class MainAction{
-        object SelectDownloadToast: MainAction()
+        object SelectFile: MainAction()
+        object DownloadHasFinished: MainAction()
     }
 
 }

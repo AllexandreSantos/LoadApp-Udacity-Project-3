@@ -1,8 +1,9 @@
 package com.allexandresantos.main
 
 import android.app.DownloadManager
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.widget.Toast
@@ -10,8 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.allexandresantos.R
-import com.allexandresantos.databinding.ActivityMainBinding
-import com.allexandresantos.receiver.DownloadReceiver
 
 
 class MainActivity : AppCompatActivity() {
@@ -20,7 +19,7 @@ class MainActivity : AppCompatActivity() {
         ViewModelProvider(this, MainViewModelFactory(this.application)).get(MainViewModel::class.java)
     }
 
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var binding: com.allexandresantos.databinding.ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,10 +33,16 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
 
-//        registerReceiver(DownloadReceiver(), IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
-
         observeViewModel()
 
+        registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+
+    }
+
+    private val receiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            viewModel.setDownloadComplete(intent)
+        }
     }
 
     private fun observeViewModel() {
@@ -45,14 +50,23 @@ class MainActivity : AppCompatActivity() {
         viewModel.action.observe(this){
             it?.getContentIfNotHandled()?.let { action ->
                 when(action){
-                    MainViewModel.MainAction.SelectDownloadToast -> showToast()
+                    MainViewModel.MainAction.SelectFile -> showChooseFileToast()
+                    MainViewModel.MainAction.DownloadHasFinished -> showFinishedDownloadToast()
                 }
             }
         }
 
+        viewModel.buttonState.observe(this) {
+            it?.getContentIfNotHandled()?.let { binding.customButton.setState(it) }
+        }
+
     }
 
-    private fun showToast(){
+    private fun showFinishedDownloadToast() {
+        Toast.makeText(this, getString(R.string.your_download_has_finished), Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showChooseFileToast(){
         Toast.makeText(this, getString(R.string.choose_file), Toast.LENGTH_SHORT).show()
     }
 

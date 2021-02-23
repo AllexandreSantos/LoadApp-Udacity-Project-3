@@ -22,5 +22,6 @@
     <string name="finished_download_channel_id">finished_download_channel</string>
     <string name="check_status">Check the status</string>
     <string name="choose_file">Choose a file to download</string>
-    <string name="loading_file">Loading file...</string>
+    <string name="loading_file">Downloading file...</string>
+    <string name="your_download_has_finished">Your download has finished</string>
 </resources>

@@ -16,7 +16,8 @@ private val FLAGS = 0
 fun NotificationManager.sendNotification(messageBody: String, applicationContext: Context) {
     // Create the content intent for the notification, which launches
     // this activity
-    val mainIntent = Intent(applicationContext, DetailActivity::class.java)
+    val mainIntent = Intent(applicationContext, MainActivity::class.java)
+    mainIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
     val mainPendingIntent = PendingIntent.getActivity(
         applicationContext,
         NOTIFICATION_ID,
