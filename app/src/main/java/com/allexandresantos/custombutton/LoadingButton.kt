@@ -4,7 +4,6 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import com.allexandresantos.R
@@ -17,52 +16,30 @@ class LoadingButton @JvmOverloads constructor(
     private var heightSize = 0
     private var loadingWidth = 0f
     private var loadingAngle = 0f
-    private var buttonText = ""
+    private var buttonText = context.getString(R.string.download)
+
+    private var colorPrimary = context.getColor(R.color.colorPrimary)
+    private var colorWhite = context.getColor(R.color.white)
+    private var colorAccent = context.getColor(R.color.colorAccent)
 
     private var buttonAnimator = ValueAnimator()
     private var circleAnimator = ValueAnimator()
 
-
-    private val buttonPaint = Paint()
-    private val circlePaint = Paint()
+    private val buttonPaint = Paint().apply { color = colorPrimary }
+    private val circlePaint = Paint().apply { color = colorWhite }
     private val buttonTextPaint = Paint().apply {
         textSize = 50f
         textAlign = Paint.Align.CENTER
         typeface = Typeface.create("", Typeface.BOLD)
-    }
-    private var buttonColor = 0
-    private var buttonTextColor = 0
-    private var circleColor = 0
-
-    init {
-        initialize(attrs)
+        color = colorWhite
     }
 
-    private fun initialize(attrs: AttributeSet? = null){
-
-        isClickable = true
-        buttonText = context.getString(R.string.download)
-        attrs?.let {
-            context.theme.obtainStyledAttributes(it, R.styleable.LoadingButton, 0, 0).apply {
-                buttonColor = getColor(R.styleable.LoadingButton_buttonColor, 0)
-                buttonTextColor = getColor(R.styleable.LoadingButton_buttonTextColor, 0)
-                circleColor = getColor(R.styleable.LoadingButton_circleColor, 0)
-
-            }
-        }
-
-        buttonPaint.color = buttonColor
-        buttonTextPaint.color = buttonTextColor
-        circlePaint.color = circleColor
-
-    }
-
-    private var buttonState: ButtonState by Delegates.observable(ButtonState.Completed) { _, _, new ->
+    private var buttonState: ButtonState by Delegates.observable(ButtonState.InitialState) { _, _, new ->
         when (new) {
             ButtonState.Loading -> {
                 buttonText = context.getString(R.string.loading_file)
                 buttonAnimator = ValueAnimator.ofFloat(0f, measuredWidth.toFloat()).apply {
-                    duration = 2000
+                    duration = 1500
                     repeatMode = ValueAnimator.RESTART
                     repeatCount = ValueAnimator.INFINITE
 
@@ -77,7 +54,7 @@ class LoadingButton @JvmOverloads constructor(
                 }
 
                 circleAnimator = ValueAnimator.ofFloat(0f, 360f).apply {
-                    duration = 2000
+                    duration = 1500
                     repeatMode = ValueAnimator.RESTART
                     repeatCount = ValueAnimator.INFINITE
 
@@ -92,53 +69,36 @@ class LoadingButton @JvmOverloads constructor(
             }
 
             ButtonState.Completed -> {
-                initialize()
-                buttonText = context.getString(R.string.download)
-                buttonColor = context.getColor(R.color.colorPrimary)
-                loadingWidth = 0f
-                loadingAngle = 0f
-                buttonAnimator.end()
-                circleAnimator.end()
-                this@LoadingButton.invalidate()
+                buttonText = context.getString(R.string.download_again)
+                loadingAngle = 360f
+                if (buttonAnimator.isRunning) buttonAnimator.end()
+                if (circleAnimator.isRunning) circleAnimator.end()
             }
 
-            ButtonState.InitialState -> Log.d("oi", ": teste")
-
+            else -> return@observable
         }
 
     }
 
     override fun onDraw(canvas: Canvas?) {
-        buttonPaint.color = buttonColor
-
         super.onDraw(canvas)
+
+        if (buttonState == ButtonState.Completed) buttonPaint.color = colorAccent else buttonPaint.color = colorPrimary
         canvas!!.drawRect(0f, 0f, measuredWidth.toFloat(), measuredHeight.toFloat(), buttonPaint)
 
-        buttonPaint.color = context.getColor(R.color.colorAccent)
+        buttonPaint.color = colorAccent
         canvas.drawRect(0f, 0f, loadingWidth, measuredHeight.toFloat(), buttonPaint)
 
-        canvas.drawText(
-            buttonText,
-            measuredWidth.toFloat() / 2,
-            measuredHeight / 1.7f,
-            buttonTextPaint
-        )
-        canvas.drawArc(
-            measuredWidth - 100f,
-            (measuredHeight / 2) - 30f,
-            measuredWidth - 50f,
-            (measuredHeight / 2) + 30f,
-            0f, loadingAngle, true, circlePaint
-        )
+        canvas.drawText(buttonText,measuredWidth.toFloat() / 2,measuredHeight / 1.7f, buttonTextPaint)
+
+        canvas.drawArc(measuredWidth - 100f,(measuredHeight / 2) - 30f,measuredWidth - 50f,(measuredHeight / 2) + 30f,0f, loadingAngle, true, circlePaint)
 
     }
 
     override fun performClick(): Boolean {
-        if (super.performClick()) return true
         invalidate()
-        return true
+        return super.performClick()
     }
-
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val minw: Int = paddingLeft + paddingRight + suggestedMinimumWidth

@@ -29,10 +29,6 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
     val buttonState: LiveData<ButtonState>
         get() = _buttonState
 
-    init {
-        _buttonState.value = ButtonState.InitialState
-    }
-
 
     fun setType(type: DownloadType){
         downloadType = type
@@ -40,10 +36,28 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
 
     fun startDownload(){
         if (downloadType != null){
+            if (_buttonState.value == ButtonState.Loading) return
             downloadType?.let { download(it) }
         } else{
             _action.value = Event(MainAction.SelectFile)
         }
+    }
+
+    private fun download(type: DownloadType) {
+
+
+        _buttonState.value = ButtonState.Loading
+
+        val request =
+                DownloadManager.Request(Uri.parse(type.value))
+                        .setTitle(app.applicationContext. getString(R.string.app_name))
+                        .setDescription(app.applicationContext.getString(R.string.app_description))
+                        .setRequiresCharging(false)
+                        .setAllowedOverMetered(true)
+                        .setAllowedOverRoaming(true)
+
+        val downloadManager = app.applicationContext.getSystemService(AppCompatActivity.DOWNLOAD_SERVICE) as DownloadManager
+        downloadManager.enqueue(request)// enqueue puts the download request in the queue.
     }
 
     fun setDownloadComplete(intent: Intent?){
@@ -61,22 +75,6 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
 
         notificationManager.sendNotification(app.applicationContext.getText(R.string.download_finished).toString(), app.applicationContext)
 
-    }
-
-    private fun download(type: DownloadType) {
-
-        _buttonState.value = ButtonState.Loading
-
-        val request =
-            DownloadManager.Request(Uri.parse(type.value))
-                .setTitle(app.applicationContext. getString(R.string.app_name))
-                .setDescription(app.applicationContext.getString(R.string.app_description))
-                .setRequiresCharging(false)
-                .setAllowedOverMetered(true)
-                .setAllowedOverRoaming(true)
-
-        val downloadManager = app.applicationContext.getSystemService(AppCompatActivity.DOWNLOAD_SERVICE) as DownloadManager
-        downloadManager.enqueue(request)// enqueue puts the download request in the queue.
     }
 
     enum class DownloadType(val value: String){

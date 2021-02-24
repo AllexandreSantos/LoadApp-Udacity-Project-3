@@ -24,4 +24,5 @@
     <string name="choose_file">Choose a file to download</string>
     <string name="loading_file">Downloading file...</string>
     <string name="your_download_has_finished">Your download has finished</string>
+    <string name="download_again">Download again</string>
 </resources>
