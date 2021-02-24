@@ -4,8 +4,8 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
-import android.view.animation.AccelerateInterpolator
 import com.allexandresantos.R
 import kotlin.properties.Delegates
 
@@ -16,6 +16,7 @@ class LoadingButton @JvmOverloads constructor(
     private var heightSize = 0
     private var loadingWidth = 0f
     private var loadingAngle = 0f
+
     private var buttonText = context.getString(R.string.download)
 
     private var colorPrimary = context.getColor(R.color.colorPrimary)
@@ -25,10 +26,11 @@ class LoadingButton @JvmOverloads constructor(
     private var buttonAnimator = ValueAnimator()
     private var circleAnimator = ValueAnimator()
 
-    private val buttonPaint = Paint().apply { color = colorPrimary }
-    private val circlePaint = Paint().apply { color = colorWhite }
-    private val buttonTextPaint = Paint().apply {
-        textSize = 50f
+    private var buttonPaint = Paint().apply { color = colorPrimary }
+    private var buttonAnimationPaint = Paint()
+    private var circlePaint = Paint().apply { color = colorWhite }
+    private var buttonTextPaint = Paint().apply {
+        textSize = 40f
         textAlign = Paint.Align.CENTER
         typeface = Typeface.create("", Typeface.BOLD)
         color = colorWhite
@@ -38,13 +40,11 @@ class LoadingButton @JvmOverloads constructor(
         when (new) {
             ButtonState.Loading -> {
                 buttonText = context.getString(R.string.loading_file)
+                buttonAnimationPaint.color = colorAccent
                 buttonAnimator = ValueAnimator.ofFloat(0f, measuredWidth.toFloat()).apply {
-                    duration = 1500
+                    duration = 2000
                     repeatMode = ValueAnimator.RESTART
                     repeatCount = ValueAnimator.INFINITE
-
-                    interpolator = AccelerateInterpolator(1f)
-
 
                     addUpdateListener {
                         loadingWidth = animatedValue as Float
@@ -54,11 +54,9 @@ class LoadingButton @JvmOverloads constructor(
                 }
 
                 circleAnimator = ValueAnimator.ofFloat(0f, 360f).apply {
-                    duration = 1500
+                    duration = 2000
                     repeatMode = ValueAnimator.RESTART
                     repeatCount = ValueAnimator.INFINITE
-
-                    interpolator = AccelerateInterpolator(1f)
 
                     addUpdateListener {
                         loadingAngle = animatedValue as Float
@@ -69,25 +67,35 @@ class LoadingButton @JvmOverloads constructor(
             }
 
             ButtonState.Completed -> {
-                buttonText = context.getString(R.string.download_again)
-                loadingAngle = 360f
+                buttonText = context.getString(R.string.download)
+
                 if (buttonAnimator.isRunning) buttonAnimator.end()
                 if (circleAnimator.isRunning) circleAnimator.end()
+
+                loadingAngle = 0f
+                buttonAnimationPaint.color = colorPrimary
+                this@LoadingButton.invalidate()
             }
 
-            else -> return@observable
+            else -> this@LoadingButton.invalidate()
+
         }
 
     }
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
+//        Log.d("oi", "onDraw: buttonanimator " + buttonAnimator.isRunning)
+//        Log.d("oi", "onDraw: loadingwidth " + loadingWidth)
+//        Log.d("oi", "onDraw: color " + buttonAnimationPaint.color)
+//        Log.d("oi", "onDraw: cor original " + colorAccent)
 
-        if (buttonState == ButtonState.Completed) buttonPaint.color = colorAccent else buttonPaint.color = colorPrimary
+        Log.d("oi", "onDraw: " + measuredWidth)
+
+
         canvas!!.drawRect(0f, 0f, measuredWidth.toFloat(), measuredHeight.toFloat(), buttonPaint)
 
-        buttonPaint.color = colorAccent
-        canvas.drawRect(0f, 0f, loadingWidth, measuredHeight.toFloat(), buttonPaint)
+        canvas.drawRect(0f, 0f, loadingWidth, measuredHeight.toFloat(), buttonAnimationPaint)
 
         canvas.drawText(buttonText,measuredWidth.toFloat() / 2,measuredHeight / 1.7f, buttonTextPaint)
 

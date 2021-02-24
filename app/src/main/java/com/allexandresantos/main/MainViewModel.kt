@@ -45,7 +45,6 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
 
     private fun download(type: DownloadType) {
 
-
         _buttonState.value = ButtonState.Loading
 
         val request =
@@ -57,12 +56,12 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
                         .setAllowedOverRoaming(true)
 
         val downloadManager = app.applicationContext.getSystemService(AppCompatActivity.DOWNLOAD_SERVICE) as DownloadManager
-        downloadManager.enqueue(request)// enqueue puts the download request in the queue.
+        downloadManager.enqueue(request)
     }
 
     fun setDownloadComplete(intent: Intent?){
 
-        val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+//        val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
 
         _buttonState.value = ButtonState.Completed
 
