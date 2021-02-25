@@ -30,7 +30,7 @@ class LoadingButton @JvmOverloads constructor(
     private var buttonAnimationPaint = Paint()
     private var circlePaint = Paint().apply { color = colorWhite }
     private var buttonTextPaint = Paint().apply {
-        textSize = 40f
+        textSize = 50f
         textAlign = Paint.Align.CENTER
         typeface = Typeface.create("", Typeface.BOLD)
         color = colorWhite
@@ -90,7 +90,7 @@ class LoadingButton @JvmOverloads constructor(
 //        Log.d("oi", "onDraw: color " + buttonAnimationPaint.color)
 //        Log.d("oi", "onDraw: cor original " + colorAccent)
 
-        Log.d("oi", "onDraw: " + measuredWidth)
+//        Log.d("oi", "onDraw: " + measuredWidth)
 
 
         canvas!!.drawRect(0f, 0f, measuredWidth.toFloat(), measuredHeight.toFloat(), buttonPaint)

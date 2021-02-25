@@ -25,4 +25,7 @@
     <string name="loading_file">Downloading file...</string>
     <string name="your_download_has_finished">Your download has finished</string>
     <string name="download_again">Download again</string>
+    <string name="file_name">File name:</string>
+    <string name="status_tv">Status:</string>
+    <string name="ok">OK</string>
 </resources>

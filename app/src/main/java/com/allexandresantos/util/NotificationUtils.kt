@@ -7,13 +7,15 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.allexandresantos.detail.DetailActivity
 import com.allexandresantos.main.MainActivity
+import com.allexandresantos.util.DOWNLOAD_NAME
+import com.allexandresantos.util.DOWNLOAD_STATUS
 
 // Notification ID.
 private val NOTIFICATION_ID = 0
 private val REQUEST_CODE = 0
 private val FLAGS = 0
 
-fun NotificationManager.sendNotification(messageBody: String, applicationContext: Context) {
+fun NotificationManager.sendNotification(applicationContext: Context, downloadName: String, downloadStatus: String) {
     // Create the content intent for the notification, which launches
     // this activity
     val mainIntent = Intent(applicationContext, MainActivity::class.java)
@@ -26,6 +28,8 @@ fun NotificationManager.sendNotification(messageBody: String, applicationContext
     )
 
     val detailIntent = Intent(applicationContext, DetailActivity::class.java)
+    detailIntent.putExtra(DOWNLOAD_NAME, downloadName)
+    detailIntent.putExtra(DOWNLOAD_STATUS, downloadStatus)
     val detailPendingIntent = PendingIntent.getActivity(
         applicationContext,
         NOTIFICATION_ID,
@@ -40,7 +44,7 @@ fun NotificationManager.sendNotification(messageBody: String, applicationContext
     )
         .setContentTitle(applicationContext
         .getString(R.string.notification_title))
-        .setContentText(messageBody)
+        .setContentText(applicationContext.getString(R.string.download_finished))
         .setContentIntent(mainPendingIntent)
 
         .addAction(R.drawable.cloud_download,

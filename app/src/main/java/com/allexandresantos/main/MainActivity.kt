@@ -5,7 +5,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.database.Cursor
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -18,6 +20,10 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by lazy {
         ViewModelProvider(this, MainViewModelFactory(this.application)).get(MainViewModel::class.java)
     }
+
+
+    private lateinit var downloadManager: DownloadManager
+
 
     private lateinit var binding: com.allexandresantos.databinding.ActivityMainBinding
 
@@ -33,6 +39,9 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
 
+        downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
+
+
         observeViewModel()
 
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
@@ -42,6 +51,42 @@ class MainActivity : AppCompatActivity() {
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             viewModel.setDownloadComplete(intent)
+
+
+
+            val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+            val cursor: Cursor =
+                downloadManager.query(DownloadManager.Query().setFilterById(id!!))
+            while (cursor.moveToNext()) {
+                val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
+                when (status) {
+
+                    DownloadManager.STATUS_FAILED -> {
+                        Log.d("oi", "onReceive: failed")
+                    }
+                    DownloadManager.STATUS_SUCCESSFUL -> {
+                        Log.d("oi", "onReceive: successful")
+                    }
+                }
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         }
     }
 
