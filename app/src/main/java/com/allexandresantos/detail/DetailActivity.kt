@@ -40,6 +40,9 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
+
+        title = getString(R.string.download_details)
+
         setSupportActionBar(binding.toolbar)
 
         intent.apply {
