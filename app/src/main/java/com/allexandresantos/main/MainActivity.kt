@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.allexandresantos.R
+import com.allexandresantos.databinding.ActivityMainBinding
 
 
 class MainActivity : AppCompatActivity() {
@@ -21,11 +22,9 @@ class MainActivity : AppCompatActivity() {
         ViewModelProvider(this, MainViewModelFactory(this.application)).get(MainViewModel::class.java)
     }
 
-
     private lateinit var downloadManager: DownloadManager
 
-
-    private lateinit var binding: com.allexandresantos.databinding.ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +40,6 @@ class MainActivity : AppCompatActivity() {
 
         downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
 
-
         observeViewModel()
 
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
@@ -50,43 +48,28 @@ class MainActivity : AppCompatActivity() {
 
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            viewModel.setDownloadComplete(intent)
 
-
+            var downloadStatus = ""
 
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-            val cursor: Cursor =
-                downloadManager.query(DownloadManager.Query().setFilterById(id!!))
-            while (cursor.moveToNext()) {
-                val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
-                when (status) {
+
+            val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(id!!))
+
+            if (cursor.moveToFirst()) {
+                when (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))) {
 
                     DownloadManager.STATUS_FAILED -> {
-                        Log.d("oi", "onReceive: failed")
+                        downloadStatus = "Failed"
+                        Log.d("oi", "onReceive: falhou")
                     }
                     DownloadManager.STATUS_SUCCESSFUL -> {
-                        Log.d("oi", "onReceive: successful")
+                        downloadStatus = "Success"
+                        Log.d("oi", "onReceive: sucesso")
                     }
                 }
             }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            viewModel.setDownloadComplete(downloadStatus)
         }
     }
 

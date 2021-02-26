@@ -33,8 +33,6 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
 
     private var downloadName: String = ""
 
-    private var downloadStatus: String = ""
-
     fun startDownload(){
         if (downloadType != null){
             if (_buttonState.value == ButtonState.Loading) return
@@ -59,13 +57,11 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
                         .setAllowedOverRoaming(true)
 
         val downloadManager = app.applicationContext.getSystemService(AppCompatActivity.DOWNLOAD_SERVICE) as DownloadManager
-        val downloadId = downloadManager.enqueue(request)
+        downloadManager.enqueue(request)
 
     }
 
-    fun setDownloadComplete(intent: Intent?){
-
-//        val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+    fun setDownloadComplete(downloadStatus: String){
 
         _buttonState.value = ButtonState.Completed
 
@@ -97,6 +93,7 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
                 GLIDE -> GLIDE_DESCRIPTION
             }
         }
+
     }
 
     sealed class MainAction{

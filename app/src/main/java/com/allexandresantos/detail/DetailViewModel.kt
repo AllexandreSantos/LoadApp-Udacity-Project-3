@@ -9,16 +9,7 @@ import androidx.lifecycle.ViewModel
 import com.allexandresantos.cancelNotifications
 
 class DetailViewModel(val app: Application): AndroidViewModel(app) {
-
-    init {
-        cancelNotifications()
-    }
-
-    fun test(){
-        Log.d("oi", "chamou")
-    }
-
-    private fun cancelNotifications() {
+    fun cancelNotifications() {
         val notificationManager =
             ContextCompat.getSystemService(
                 app,

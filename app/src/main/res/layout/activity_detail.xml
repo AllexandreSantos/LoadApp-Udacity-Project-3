@@ -42,22 +42,23 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="48dp"
             android:text="@string/file_name"
-            android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/appBarLayout2" />
 
         <TextView
             android:id="@+id/animated_file_name_tv"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:textAlignment="center"
-            android:textSize="18sp"
+            android:textAlignment="viewStart"
             android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintBottom_toBottomOf="@+id/file_name_tv"
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toTopOf="@+id/file_name_tv"
-            android:text="TESTETESTE"
             tools:text="@tools:sample/lorem" />
 
 
@@ -68,7 +69,6 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="64dp"
             android:text="@string/status_tv"
-            android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/file_name_tv" />
 
@@ -78,12 +78,10 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:textAlignment="center"
-            android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/status_tv"
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toTopOf="@+id/status_tv"
-            android:text="TESTETESTE"
             tools:text="@tools:sample/lorem" />
 
         <Button
@@ -96,7 +94,6 @@
             android:layout_marginBottom="16dp"
             android:text="@string/ok"
             android:textColor="@color/white"
-            android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
