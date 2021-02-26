@@ -85,13 +85,6 @@ class LoadingButton @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-//        Log.d("oi", "onDraw: buttonanimator " + buttonAnimator.isRunning)
-//        Log.d("oi", "onDraw: loadingwidth " + loadingWidth)
-//        Log.d("oi", "onDraw: color " + buttonAnimationPaint.color)
-//        Log.d("oi", "onDraw: cor original " + colorAccent)
-
-//        Log.d("oi", "onDraw: " + measuredWidth)
-
 
         canvas!!.drawRect(0f, 0f, measuredWidth.toFloat(), measuredHeight.toFloat(), buttonPaint)
 

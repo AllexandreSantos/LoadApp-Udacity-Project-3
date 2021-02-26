@@ -47,12 +47,10 @@ class DetailActivity : AppCompatActivity() {
 
         intent.apply {
             getStringExtra(DOWNLOAD_NAME)?.let {
-                Log.d("oi", "onCreate: " + it)
                 binding.animatedFileNameTv.text = it
             }
 
             getStringExtra(DOWNLOAD_STATUS)?.let {
-                Log.d("oi", "onCreate: " + it)
                 binding.animatedStatusTv.text = it
             }
         }

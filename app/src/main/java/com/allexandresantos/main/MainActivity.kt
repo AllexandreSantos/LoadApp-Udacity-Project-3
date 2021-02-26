@@ -60,11 +60,9 @@ class MainActivity : AppCompatActivity() {
 
                     DownloadManager.STATUS_FAILED -> {
                         downloadStatus = "Failed"
-                        Log.d("oi", "onReceive: falhou")
                     }
                     DownloadManager.STATUS_SUCCESSFUL -> {
                         downloadStatus = "Success"
-                        Log.d("oi", "onReceive: sucesso")
                     }
                 }
             }
