@@ -1,6 +1,6 @@
 # LoadApp
 Completing this project is a requirement to graduate from the Udacity Android Kotlin Developer.
-In this project you will find an app that downloads a file from Internet by clicking on a custom-built button where:
+This is a very simple project on basic animations. In this project you will find an app that downloads a file from Internet by clicking on a custom-built button where:
  - width of the button gets animated from left to right;
  - text gets changed based on different states of the button;
  - circle gets be animated from 0 to 360 degrees.
