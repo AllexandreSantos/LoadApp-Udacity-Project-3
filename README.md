@@ -16,6 +16,6 @@ Just clone or download the project and open it with AndroidStudio and choose "Op
 * [MVVM](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel) - Architecture pattern
 
 ##Screenshots
-[!image](https://github.com/AllexandreSantos/LoadApp-Udacity-Project-3/blob/main/screenshots/screenshot_1.png)
-[!image](https://github.com/AllexandreSantos/LoadApp-Udacity-Project-3/blob/main/screenshots/screenshot_2.png)
-[!image](https://github.com/AllexandreSantos/LoadApp-Udacity-Project-3/blob/main/screenshots/screenshot_3.png)
+[!image](https://raw.githubusercontent.com/AllexandreSantos/LoadApp-Udacity-Project-3/main/screenshots/screenshot_1.png)
+[!image](https://raw.githubusercontent.com/AllexandreSantos/LoadApp-Udacity-Project-3/main/screenshots/screenshot_2.png)
+[!image](https://raw.githubusercontent.com/AllexandreSantos/LoadApp-Udacity-Project-3/main/screenshots/screenshot_3.png)
