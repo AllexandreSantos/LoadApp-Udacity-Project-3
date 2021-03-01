@@ -17,19 +17,16 @@ class LoadingButton @JvmOverloads constructor(
     private var loadingWidth = 0f
     private var loadingAngle = 0f
 
-    private var buttonText: String = ""
+    private var buttonText = context.getString(R.string.download)
 
-//    private var colorPrimary = context.getColor(R.color.colorPrimary)
-    private var colorPrimary = 0
+    private var colorPrimary = context.getColor(R.color.colorPrimary)
     private var colorWhite = context.getColor(R.color.white)
-//    private var colorAccent = context.getColor(R.color.colorAccent)
-    private var colorAccent = 0
+    private var colorAccent = context.getColor(R.color.colorAccent)
 
     private var buttonAnimator = ValueAnimator()
     private var circleAnimator = ValueAnimator()
 
-//    private var buttonPaint = Paint().apply { color = colorPrimary }
-    private var buttonPaint = Paint()
+    private var buttonPaint = Paint().apply { color = colorPrimary }
     private var buttonAnimationPaint = Paint()
     private var circlePaint = Paint().apply { color = colorWhite }
     private var buttonTextPaint = Paint().apply {
@@ -83,17 +80,6 @@ class LoadingButton @JvmOverloads constructor(
             else -> this@LoadingButton.invalidate()
 
         }
-
-    }
-
-    init {
-        context.theme.obtainStyledAttributes(attrs, R.styleable.LoadingButton, 0, 0).apply {
-            colorPrimary = getColor(R.styleable.LoadingButton_buttonColor, 0)
-            colorAccent = getColor(R.styleable.LoadingButton_buttonAnimationColor, 0)
-            buttonText = getString(R.styleable.LoadingButton_buttonText).toString()
-        }
-
-        buttonPaint.color = colorPrimary
 
     }
 
